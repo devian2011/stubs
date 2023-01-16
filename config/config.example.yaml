@@ -1,0 +1,26 @@
+http:
+  addr: ":8000"
+stubs:
+  http:
+    - host: "test.loc"
+      log:
+        provider: file
+        path: "./out/test-loc"
+      directories:
+        rules: "./examples/stub/test-loc/rules"
+        static: "./examples/stub/test-loc/static"
+      ignore:
+        - favicon.ico
+      defaultHeaders:
+        "Content-Type": "application/json"
+    - host: "test2.loc"
+      log:
+        provider: file
+        path: "./out/test2-loc"
+      directories:
+        rules: "./examples/stub/test2-loc/rules"
+        static: "./examples/stub/test2-loc/static"
+      ignore:
+        - favicon.ico
+      defaultHeaders:
+        "Content-Type": "application/json"

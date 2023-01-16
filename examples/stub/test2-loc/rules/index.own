@@ -1,0 +1,11 @@
+URL: /index
+#---#
+DELAY: 1s
+#---#
+HEADERS:
+Content-Type: application/json
+#---#
+BODY:
+{
+    "host": "test2.loc host"
+}

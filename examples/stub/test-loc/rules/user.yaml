@@ -1,0 +1,16 @@
+url: "^/users/find/[0-9]+$"
+delay: 0s
+headers:
+  Content-Type: application/json
+body: |
+  {
+    "host": "test.loc",
+    "user": {
+        "name": "John Jones",
+        "age": 18,
+        "location": {
+          "city": "New-York",
+          "country": "USA"
+        }
+     }
+  }
