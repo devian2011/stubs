@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"github.com/sirupsen/logrus"
-	"os"
 	"os/signal"
 	"stubs/internal"
 	"syscall"
@@ -15,12 +14,7 @@ func main() {
 	flag.Parse()
 	ctx, stop := context.WithCancel(context.Background())
 
-	signalCh := make(chan os.Signal)
-	signal.Notify(signalCh, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGILL, syscall.SIGINT)
-	go func() {
-		<-signalCh
-		stop()
-	}()
+	signal.NotifyContext(ctx, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGILL, syscall.SIGINT)
 
 	defer func() {
 		if err := recover(); err != nil {
