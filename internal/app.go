@@ -43,10 +43,20 @@ func (a *App) Run() error {
 		Handler: a.httpHandler.Handle,
 	}
 
-	go srv.ListenAndServe(a.cfg.Http.Addr)
+	errCh := make(chan error)
 
-	<-a.ctx.Done()
-	srv.Shutdown()
+	go func(addr string, errCh chan error) {
+		err := srv.ListenAndServe(a.cfg.Http.Addr)
+		if err != nil {
+			errCh <- err
+		}
+	}(a.cfg.Http.Addr, errCh)
 
-	return nil
+	select {
+	case <-a.ctx.Done():
+		srv.Shutdown()
+		return nil
+	case err := <-errCh:
+		return err
+	}
 }
