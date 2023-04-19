@@ -3,8 +3,9 @@ package server
 import (
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
-	"strings"
+	"net"
 )
 
 type Processor interface {
@@ -43,16 +44,20 @@ func (h *Handler) AddProcessor(processor Processor) error {
 }
 
 func (h *Handler) Handle(ctx *fasthttp.RequestCtx) {
+	host, _, err := net.SplitHostPort(string(ctx.Host()))
+	if err != nil {
+		logrus.Errorf("cannot find host and port. host: %s, err: %s", ctx.Host(), err.Error())
+		ctx.Error(fmt.Sprintf("cannot find host or port in host:%s", host), 500)
+	}
 
-	domain := strings.Split(string(ctx.Host()), ":")[0]
-	if p, exists := h.processors[domain]; exists {
+	if p, exists := h.processors[host]; exists {
 		path := ctx.Path()
-		if string(path) == "/" || string(path) == "" {
+		if string(path) == "/" || len(path) == 0 {
 			ctx.URI().SetPath("/index")
 		}
 
 		p.Process(ctx)
 	} else {
-		ctx.Error(fmt.Sprintf("Processor for domain: %s does not exists", domain), 404)
+		ctx.Error(fmt.Sprintf("Processor for domain: %s does not exists", host), 404)
 	}
 }
