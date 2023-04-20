@@ -1,5 +1,6 @@
 url: "^/users/find/[0-9]+$"
 delay: 0s
+Protocol: rest
 headers:
   Content-Type: application/json
 method: POST
