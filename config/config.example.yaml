@@ -1,25 +1,33 @@
-http:
-  addr: ":8000"
+middlewares:
+  - name: first-basic
+    plugin: auth-basic
+    params:
+      - "user:$2"
+servers:
+  - name: first
+    addr: ":8000"
+    type: http
+    params: [ ]
 stubs:
+  jsonrpc:
+    - host: "test.loc"
+      server: first
+      endpoint: "/jsonrpc"
+      middlewares: [ ]
+      log:
+        provider: file
+        path: "./out/test-loc/jsonrpc"
+      rules: "./examples/stub/test-loc/rules/jsonrpc"
   http:
     - host: "test.loc"
+      server: first
+      middlewares: [ ]
       log:
         provider: file
-        path: "./out/test-loc"
+        path: "./out/test-loc/http"
       directories:
-        rules: "./examples/stub/test-loc/rules"
+        rules: "./examples/stub/test-loc/rules/rest"
         static: "./examples/stub/test-loc/static"
-      ignore:
-        - favicon.ico
-      defaultHeaders:
-        "Content-Type": "application/json"
-    - host: "test2.loc"
-      log:
-        provider: file
-        path: "./out/test2-loc"
-      directories:
-        rules: "./examples/stub/test2-loc/rules"
-        static: "./examples/stub/test2-loc/static"
       ignore:
         - favicon.ico
       defaultHeaders:

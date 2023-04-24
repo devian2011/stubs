@@ -7,18 +7,17 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
-	stubHttp "stubs/internal/stub/http"
+	"stubs/internal/middleware"
+	"stubs/internal/server"
+	stubHttp "stubs/internal/stub"
 )
 
 type LogProvider string
 
 type Configuration struct {
-	Http struct {
-		Addr string `json:"addr" yaml:"addr"`
-	} `json:"http" yaml:"http"`
-	Stubs struct {
-		Http []stubHttp.Config `json:"http" yaml:"http"`
-	} `json:"stubs" yaml:"stubs"`
+	Middlewares []middleware.Config
+	Servers     []server.Config
+	Stubs       stubHttp.Config
 }
 
 func NewConfiguration(configFile string) (*Configuration, error) {

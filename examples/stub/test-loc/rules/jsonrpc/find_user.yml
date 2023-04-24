@@ -1,0 +1,37 @@
+- method: findUserById
+  delay: 0s
+  protocol: jsonrpc
+  responses:
+    success:
+      when: "id > 0 && id < 10"
+      code: 200
+      body:
+        template: |
+          {
+            "host": "test.loc",
+            "user": {
+               "id": $id,
+               "name": "$name $lastname",
+               "age": 18,
+                "location": {
+                  "city": "New-York",
+                  "country": "USA"
+                }
+            }
+          }
+        params:
+          name: input POST user.name
+          lastname: faker string 15
+          age: faker int 18 25
+        store:
+          id: input GET id
+    error:
+      when: "id > 10"
+      code: 500
+      body:
+        template: |
+          {
+            "error": true,
+            "message": "not valid id"
+          }
+
